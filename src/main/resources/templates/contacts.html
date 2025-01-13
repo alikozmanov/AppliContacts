@@ -1,12 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
     <title>The contacts</title>
 </head>
 <body>
 
-      Tout va bien jusqu'ici
-
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>FamilyTies</th>
+        </tr>
+        <tr th:each="c:${listContact}">
+            <td th:text="${c.id}"></td>
+            <td th:text="${c.firstName}"></td>
+            <td th:text="${c.lastName}"></td>
+            <td th:text="${c.email}"></td>
+            <td th:text="${c.phone}"></td>
+            <td th:text="${c.address}"></td>
+            <td th:text="${c.familyties}"></td>
+        </tr>
+    </table>
 </body>
 </html>
