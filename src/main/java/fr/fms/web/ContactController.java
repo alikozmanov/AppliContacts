@@ -29,6 +29,18 @@ public class ContactController {
 
         return "contacts";
     }
+
+    @GetMapping("/delete")
+    public String delete(@RequestParam(name = "id") Long id,
+                         @RequestParam(name = "page") int page,
+                         @RequestParam(name = "keyword", defaultValue = "") String keyword) {
+        // Vérifier si l'ID existe avant de le supprimer
+        if (contactRepository.existsById(id)) {
+            contactRepository.deleteById(id);
+        }
+
+        return "redirect:/index?page=" + page + "&keyword=" + keyword;
+    }
 }
 
 
