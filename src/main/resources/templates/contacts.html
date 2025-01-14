@@ -1,32 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="ISO-8859-1">
-    <title>The contacts</title>
+    <title>The Contacts</title>
     <link rel="stylesheet" href="../static/css/bootstrap.min.css"
-                            th:href="@{css/bootstrap.min.css}">
+          th:href="@{css/bootstrap.min.css}">
 </head>
 <body>
+<div class="container">
+    <div class="panel panel-primary">
+        <div class="panel-heading">Contact list</div>
+        <form th:action="@{/index}" method="get">
+            <input type="text" name="keyword">
+            <button type="submit" class="btn btn-primary"> Search </button>
+        </form>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Address</th>
+                    <th>FamilyTies</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${listContact}">
+                    <td th:text="${c.id}"></td>
+                    <td th:text="${c.firstName}"></td>
+                    <td th:text="${c.lastName}"></td>
+                    <td th:text="${c.email}"></td>
+                    <td th:text="${c.phone}"></td>
+                    <td th:text="${c.address}"></td>
+                    <td th:text="${c.familyties}"></td>
+                </tr>
+                </tbody>
+            </table>
 
-    <table class="table">
-        <tr>
-            <th>Id</th>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>FamilyTies</th>
-        </tr>
-        <tr th:each="c:${listContact}">
-            <td th:text="${c.id}"></td>
-            <td th:text="${c.firstName}"></td>
-            <td th:text="${c.lastName}"></td>
-            <td th:text="${c.email}"></td>
-            <td th:text="${c.phone}"></td>
-            <td th:text="${c.address}"></td>
-            <td th:text="${c.familyties}"></td>
-        </tr>
-    </table>
+            <!-- Pagination -->
+            <div class="pagination-container">
+                <ul class="pagination">
+                    <li th:each="page, status : ${pages}"
+                        class="page-item ${currentPage == status.index ? 'active' : ''}">
+                        <a th:href="@{/index(page=${status.index})}" class="page-link"
+                           th:text="${status.index + 1}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
