@@ -3,9 +3,11 @@ package fr.fms.web;
 import fr.fms.dao.CategoryRepository;
 import fr.fms.dao.ContactRepository;
 import fr.fms.entities.Contact;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -69,7 +71,6 @@ public class ContactController {
 
         return "redirect:/index?page=" + page + "&keyword=" + keyword;
     }
-
 }
 
 

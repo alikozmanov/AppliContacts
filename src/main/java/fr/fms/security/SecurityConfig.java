@@ -40,9 +40,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.exceptionHandling().accessDeniedPage("/403");//au cas ou un utilisateur tente d'accéder à une page non authorisée
     }
-
-//    @Override
-//    protected void configure(HttpSecurity http) {
-//        http.formLogin().loginPage("/login");
-//    }
 }
