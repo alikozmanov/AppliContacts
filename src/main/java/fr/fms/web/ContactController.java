@@ -1,5 +1,6 @@
 package fr.fms.web;
 
+import fr.fms.dao.CategoryRepository;
 import fr.fms.dao.ContactRepository;
 import fr.fms.entities.Contact;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +36,8 @@ public class ContactController {
     @GetMapping("/contact")
     public String contact(Model model) {
         Contact contact = new Contact();
-        model.addAttribute("contact",contact);
-        return  "contact";
+        model.addAttribute("contact", contact);
+        return "contact";
     }
 
     @PostMapping("/save")
@@ -45,16 +46,16 @@ public class ContactController {
         return "redirect:/index";
     }
 
-    @GetMapping("/edit")
-    public String editContact(@RequestParam(name = "id") Long id, Model model) {
-        // Vérifier si le contact existe
-        Contact contact = contactRepository.findById(id).orElse(null);
-        if (contact == null) {
-            return "redirect:/index";
-        }
-        model.addAttribute("contact", contact); // Charger le contact dans le formulaire
-        return "contact";
-    }
+//    @GetMapping("/edit")
+//    public String editContact(@RequestParam(name = "id") Long id, Model model) {
+//        // Vérifier si le contact existe
+//        Contact contact = contactRepository.findById(id).orElse(null);
+//        if (contact == null) {
+//            return "redirect:/index";
+//        }
+//        model.addAttribute("contact", contact); // Charger le contact dans le formulaire
+//        return "contact";
+//    }
 
 
     @GetMapping("/delete")
