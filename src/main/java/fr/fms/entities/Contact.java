@@ -1,6 +1,7 @@
 package fr.fms.entities;
 
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.NotNull;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;

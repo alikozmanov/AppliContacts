@@ -1,43 +1,64 @@
 package fr.fms.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 import javax.sql.DataSource;
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    @Autowired
-    DataSource dataSource;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select username as principal, password as credentials, active from T_Users where username=?")
-                .authoritiesByUsernameQuery("select username as principal, role as role from T_Users_Roles where username=?")
-                .rolePrefix("ROLE_")
-                .passwordEncoder(passwordEncoder());
+    @Configuration
+    @EnableWebSecurity
+    @EnableMethodSecurity // Active la sécurité au niveau des méthodes (@PreAuthorize, @Secured, etc.)
+    public class SecurityConfig {
+
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
+            return http
+                    .csrf(csrf -> csrf.disable()) // Désactive CSRF pour simplifier les tests (à activer en production)
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/admin/**").hasRole("ADMIN")
+                            .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                            .anyRequest().authenticated()
+                    )
+                    .sessionManagement(session -> session
+                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Définit la gestion de session
+                    )
+                    .formLogin(Customizer.withDefaults()) // Active le formulaire de connexion par défaut
+                    .httpBasic(Customizer.withDefaults()) // Active l'authentification basique
+                    .userDetailsService(userDetailsService)
+                    .build();
+        }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+            UserDetails admin = User.withUsername("azerty")
+                    .password(passwordEncoder().encode("12345"))
+                    .roles("ADMIN")
+                    .build();
+
+            UserDetails user = User.withUsername("user")
+                    .password(passwordEncoder().encode("user123"))
+                    .roles("USER")
+                    .build();
+
+            return new InMemoryUserDetailsManager(admin, user);
+        }
     }
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin();
-        // Attribution des accès aux pages en fonction des rôles
-        http.authorizeRequests().antMatchers("/index","/save","/delete","/edit","/contact").hasRole("ADMIN");
-        http.authorizeRequests().antMatchers("/index","/edit").hasRole("USER");
-
-        http.exceptionHandling().accessDeniedPage("/403");//au cas ou un utilisateur tente d'accéder à une page non authorisée
-    }
-}
