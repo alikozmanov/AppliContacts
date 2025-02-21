@@ -20,13 +20,13 @@ import javax.sql.DataSource;
 
     @Configuration
     @EnableWebSecurity
-    @EnableMethodSecurity // Active la sécurité au niveau des méthodes (@PreAuthorize, @Secured, etc.)
+    @EnableMethodSecurity // Active la sécurité au niveau des méthodes
     public class SecurityConfig {
 
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
             return http
-                    .csrf(csrf -> csrf.disable()) // Désactive CSRF pour simplifier les tests (à activer en production)
+                    .csrf(csrf -> csrf.disable()) // Désactive CSRF pour simplifier les tests
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers("/admin/**").hasRole("ADMIN")
                             .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
@@ -54,10 +54,10 @@ import javax.sql.DataSource;
                     .build();
 
             UserDetails user = User.withUsername("user")
-                    .password(passwordEncoder().encode("user123"))
+                    .password(passwordEncoder().encode("12345"))
                     .roles("USER")
                     .build();
-
+// Authentification en mémoire
             return new InMemoryUserDetailsManager(admin, user);
         }
     }
