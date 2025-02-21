@@ -1,12 +1,15 @@
 package fr.fms.entities;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
